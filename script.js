@@ -8,32 +8,32 @@ const count = 30;
 const apiKey = "eqjmy_U9MHsKULRVMjtXhK0MIOD15YdBUyub_q8jSyk";
 const apiUrl = `https://api.unsplash.com/photos/random?client_id=${apiKey}&count=${count}`;
 
-// check if all images are loaded or not
-imageLoader = () => {
+// Check if all images are loaded or not
+function imageLoader() {
   imageloaded++;
-  console.log(imageloaded);
-  if (imageloaded == totalImages) {
+  if (imageloaded === totalImages) {
     ready = true;
-    console.log("ready", ready);
+    loader.hidden = true;
   }
-};
+}
 
-// Create Elelments for links and photos
+// Create Elements for links and photos
 function displayPhotos() {
+  // Reset variables for new photos
+  imageloaded = 0;
   totalImages = photosArray.length;
-  console.log("totalImages", totalImages);
+
   photosArray.forEach((photo) => {
-    // Create <a> to links to unsplash
     const item = document.createElement("a");
     item.setAttribute("href", photo.links.html);
     item.setAttribute("target", "_blank");
-    // create <img> for photos
+
     const img = document.createElement("img");
     img.setAttribute("src", photo.urls.regular);
-    img.setAttribute("alt", photo.alt_desription);
-    // image loader
+    img.setAttribute("alt", photo.alt_description);
+
     img.addEventListener("load", imageLoader);
-    // put <img> inside <a>, then put both inside image
+
     item.appendChild(img);
     imageContainer.appendChild(item);
   });
@@ -42,25 +42,26 @@ function displayPhotos() {
 // Get photos from UNSPLASH API
 async function getPhotos() {
   try {
+    ready = false;
     const response = await fetch(apiUrl);
     photosArray = await response.json();
-    // console.log(photosArray);
     displayPhotos();
   } catch (e) {
     console.log(e);
   }
 }
 
+// Initially load photos
 getPhotos();
 
+// Event listener for infinite scroll
 window.addEventListener("scroll", () => {
-  // console.log('Hey')
   if (
-    window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000 &&
-    ready
+    window.innerHeight + window.scrollY >=
+    document.body.offsetHeight - (800 && ready)
   ) {
-    ready = false;
+    ready = true; // Prevent new fetch until current batch is loaded
+    loader.hidden = false; // Show loader while fetching new photos
     getPhotos();
-    console.log("Load More");
   }
 });
