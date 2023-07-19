@@ -27,7 +27,7 @@ async function getphotos() {
   try {
     const response = await fetch(apiUrl);
     photosArray = await response.json;
-    console.log(photosArray);
+    // console.log(photosArray);
   } catch (e) {
     console.log(e);
   }
