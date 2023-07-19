@@ -1,12 +1,27 @@
 const imageContainer = document.getElementById("imageContainer");
 const loader = document.getElementById("loader");
+let ready = false;
+let imageloaded = 0;
+let totalImages = 0;
 let photosArray = [];
 const count = 30;
 const apiKey = "eqjmy_U9MHsKULRVMjtXhK0MIOD15YdBUyub_q8jSyk";
 const apiUrl = `https://api.unsplash.com/photos/random?client_id=${apiKey}&count=${count}`;
 
+// check if all images are loaded or not
+imageLoader = () => {
+  imageloaded++;
+  console.log(imageloaded);
+  if (imageloaded == totalImages) {
+    ready = true;
+    console.log("ready", ready);
+  }
+};
+
 // Create Elelments for links and photos
 function displayPhotos() {
+  totalImages = photosArray.length;
+  console.log("totalImages", totalImages);
   photosArray.forEach((photo) => {
     // Create <a> to links to unsplash
     const item = document.createElement("a");
@@ -16,6 +31,8 @@ function displayPhotos() {
     const img = document.createElement("img");
     img.setAttribute("src", photo.urls.regular);
     img.setAttribute("alt", photo.alt_desription);
+    // image loader
+    img.addEventListener("load", imageLoader);
     // put <img> inside <a>, then put both inside image
     item.appendChild(img);
     imageContainer.appendChild(item);
@@ -36,10 +53,14 @@ async function getPhotos() {
 
 getPhotos();
 
-window.addEventListener('scroll',()=>{
+window.addEventListener("scroll", () => {
   // console.log('Hey')
-  if(window.innerHeight + window.scrollY >= document.body.offsetHeight-1000){
+  if (
+    window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000 &&
+    ready
+  ) {
+    ready = false;
     getPhotos();
-    console.log("Load More")
+    console.log("Load More");
   }
-})
+});
