@@ -5,6 +5,7 @@
   box-sizing: border-box;
   font-family: "Bebas Neue", sans-serif;
   /* font-family: 'Montserrat', sans-serif; */
+  overflow-x: hidden;
 }
 
 body {
